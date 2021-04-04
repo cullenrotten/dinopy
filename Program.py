@@ -92,7 +92,7 @@ while True:
         falling = False
         jumpForce = 0
         player.bottom = floor.top
-    if moveUp and not falling:
+    if moveUp and not falling and player.top > 100:
         jumpForce = INITJUMPFORCE
     if jumpStep != 60 or falling and player.bottom < floor.top:
         jumpForce -= GRAVITY
