@@ -24,12 +24,15 @@ score = 0.0
 
 # Set up movement variables
 MOVESPEED = 5
-JUMPFORCE = 800
+INITJUMPFORCE = 200
+jumpForce = 0
+GRAVITY = 10
 moveLeft = False
 moveRight = False
 moveUp = False
 moveDown = False
 falling = False
+stopJumping = False
 jumpStep = 1
 
 # Set up walls
@@ -74,7 +77,6 @@ while True:
                 moveRight = False
             if event.key == K_UP or event.key == K_w:
                 moveUp = False
-                falling = True
             if event.key == K_DOWN or event.key == K_s:
                 moveDown = False
     # EVENTS END
@@ -84,29 +86,27 @@ while True:
         player.left -= MOVESPEED
     elif moveRight and player.right != WINDOWWIDTH:
         player.left += MOVESPEED
-    if moveUp:
-        if jumpStep != 60 and not falling:
-            player.top -= JUMPFORCE / 60
-            jumpStep += 1
-            if player.top < 50:
-                falling = True
-        else:
-            falling = True
-    if falling:
-        if player.bottom < floor.top:
-            player.top += JUMPFORCE / 55
-            if player.bottom > floor.top:
-                player.bottom = floor.top
-        else:
-            falling = False
-            jumpStep = 1
+    if jumpForce <= 0:
+        falling = True
+    if player.bottom >= floor.top:
+        falling = False
+        jumpForce = 0
+        player.bottom = floor.top
+    if moveUp and not falling:
+        jumpForce = INITJUMPFORCE
+    if jumpStep != 60 or falling and player.bottom < floor.top:
+        jumpForce -= GRAVITY
+        player.top -= jumpForce / 30
+        jumpStep += 1
+    if jumpStep == 60 and not falling:
+        jumpStep = 1
     # PLAYER MOVEMENT END
 
     # WALL MOVEMENT
     if len(walls) == 0:
         walls.append(generateNewWall())
     elif len(walls) < 3:
-        if random.randint(0,60) == 0 and walls[len(walls)-1].right < WINDOWWIDTH - 150:
+        if walls[len(walls)-1].right < WINDOWWIDTH - 150 and random.randint(0,60) == 0:
             walls.append(generateNewWall())
     else:
         pass
