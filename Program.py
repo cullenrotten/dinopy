@@ -77,6 +77,7 @@ while True:
                 moveRight = False
             if event.key == K_UP or event.key == K_w:
                 moveUp = False
+                stopJumping = True
             if event.key == K_DOWN or event.key == K_s:
                 moveDown = False
     # EVENTS END
@@ -86,13 +87,16 @@ while True:
         player.left -= MOVESPEED
     elif moveRight and player.right != WINDOWWIDTH:
         player.left += MOVESPEED
+    
+    # JUMP AND GRAVITY
     if jumpForce <= 0:
         falling = True
     if player.bottom >= floor.top:
         falling = False
         jumpForce = 0
+        stopJumping = False
         player.bottom = floor.top
-    if moveUp and not falling and player.top > 100:
+    if moveUp and not falling and player.top > 130 and not stopJumping:
         jumpForce = INITJUMPFORCE
     if jumpStep != 60 or falling and player.bottom < floor.top:
         jumpForce -= GRAVITY
@@ -100,6 +104,8 @@ while True:
         jumpStep += 1
     if jumpStep == 60 and not falling:
         jumpStep = 1
+    # JUMP AND GRAVITY END
+
     # PLAYER MOVEMENT END
 
     # WALL MOVEMENT
