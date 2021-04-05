@@ -25,15 +25,7 @@ score = 0.0
 # Set up movement variables
 MOVESPEED = 5
 INITJUMPFORCE = 200
-jumpForce = 0
 GRAVITY = 10
-moveLeft = False
-moveRight = False
-moveUp = False
-moveDown = False
-falling = False
-stopJumping = False
-jumpStep = 1
 
 # Set up walls
 WALLHEIGHT = 200
@@ -44,8 +36,34 @@ walls = []
 # Set up floor
 floor = pygame.Rect(0,WINDOWHEIGHT - WINDOWHEIGHT / 3 + 50,WINDOWWIDTH,WINDOWHEIGHT - WINDOWHEIGHT / 3 + 50)
 
-# Set up the player.
+
+jumpForce = 0
+moveLeft = False
+moveRight = False
+moveUp = False
+moveDown = False
+falling = False
+stopJumping = False
+jumpStep = 1
+walls.clear()
 player = pygame.Rect(0,floor.top - 30,30,30)
+
+# Game start
+def gameStart():
+    jumpForce = 0
+    moveLeft = False
+    moveRight = False
+    moveUp = False
+    moveDown = False
+    falling = False
+    stopJumping = False
+    jumpStep = 1
+    walls.clear()
+    player.bottom = floor.top
+    player.left = 30
+    score = 0
+
+gameStart()
 
 # Main game loop
 while True:
@@ -70,6 +88,8 @@ while True:
             if event.key == K_ESCAPE:
                 pygame.quit()
                 sys.exit()
+            if event.key == K_TAB:
+                gameStart()
         if event.type == KEYUP:
             if event.key == K_LEFT or event.key == K_a:
                 moveLeft = False
@@ -96,7 +116,7 @@ while True:
         jumpForce = 0
         stopJumping = False
         player.bottom = floor.top
-    if moveUp and not falling and player.top > 130 and not stopJumping:
+    if moveUp and not falling and player.top > WINDOWHEIGHT / 3 and not stopJumping:
         jumpForce = INITJUMPFORCE
     if jumpStep != 60 or falling and player.bottom < floor.top:
         jumpForce -= GRAVITY
@@ -136,7 +156,6 @@ while True:
     pygame.display.update()
     mainClock.tick(60)
     # UPDATE SCREEN END
-
     # LOSE
     basicFont = pygame.font.SysFont(None, 24)
     text = basicFont.render('Final score : %s' % (round(score)), True, BLACK, WHITE)
@@ -144,6 +163,9 @@ while True:
     textRect.centerx = windowSurface.get_rect().centerx
     textRect.centery = windowSurface.get_rect().centery
     while lost:
+        windowSurface.blit(text, textRect)
+        pygame.display.update()
+        mainClock.tick(1)
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
@@ -152,7 +174,8 @@ while True:
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-        windowSurface.blit(text, textRect)
-        pygame.display.update()
-        mainClock.tick(1)
+                if event.key == K_TAB:
+                    gameStart()
+                    lost = False
+                    break
     # END LOSE
