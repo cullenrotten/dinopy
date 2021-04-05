@@ -90,6 +90,7 @@ while True:
                 sys.exit()
             if event.key == K_TAB:
                 gameStart()
+                score = 0
         if event.type == KEYUP:
             if event.key == K_LEFT or event.key == K_a:
                 moveLeft = False
@@ -176,6 +177,7 @@ while True:
                     sys.exit()
                 if event.key == K_TAB:
                     gameStart()
+                    score = 0
                     lost = False
                     break
     # END LOSE
