@@ -9,7 +9,7 @@ mainClock = pygame.time.Clock()
 WINDOWWIDTH = 800
 WINDOWHEIGHT = 600
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32, 0, 1)
-pygame.display.set_caption('test')
+pygame.display.set_caption('Dino')
 
 # Set up colors
 BLACK = (0,0,0)
@@ -50,18 +50,9 @@ player = pygame.Rect(0,floor.top - 30,30,30)
 
 # Game start
 def gameStart():
-    jumpForce = 0
-    moveLeft = False
-    moveRight = False
-    moveUp = False
-    moveDown = False
-    falling = False
-    stopJumping = False
-    jumpStep = 1
     walls.clear()
     player.bottom = floor.top
     player.left = 30
-    score = 0
 
 gameStart()
 
@@ -90,6 +81,14 @@ while True:
                 sys.exit()
             if event.key == K_TAB:
                 gameStart()
+                jumpForce = 0
+                moveLeft = False
+                moveRight = False
+                moveUp = False
+                moveDown = False
+                falling = False
+                stopJumping = False
+                jumpStep = 1  
                 score = 0
         if event.type == KEYUP:
             if event.key == K_LEFT or event.key == K_a:
@@ -179,5 +178,13 @@ while True:
                     gameStart()
                     score = 0
                     lost = False
+                    jumpForce = 0
+                    moveLeft = False
+                    moveRight = False
+                    moveUp = False
+                    moveDown = False
+                    falling = False
+                    stopJumping = False
+                    jumpStep = 1        
                     break
     # END LOSE
