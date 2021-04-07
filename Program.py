@@ -92,7 +92,7 @@ while True:
     if slow:
         timebarsize -= 0.25 * dt
     if intang:
-        timebarsize -=0.5 * dt
+        timebarsize -= 0.5 * dt
     if timebarsize <= 0:
         lost = True
     timebar = pygame.Rect(20, 20, timebarsize, 20)
@@ -248,7 +248,7 @@ while True:
         elif fruit.colliderect(player) and not intang:
             fruits.remove(fruit)
             score += 15
-            timebarsize += 25
+            timebarsize += 50
     if slow : dt *= 2
     # FRUIT MOVEMENT END
 
