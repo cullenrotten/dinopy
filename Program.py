@@ -25,6 +25,8 @@ lost = False
 score = 0
 lastTime = time.time()
 FPS = 144
+dt = 0
+SMALLSTEP = 0.010
 
 # Set up time bar
 timebarsize = 200
@@ -93,13 +95,13 @@ gameStart()
 # Main game loop
 while True:
     # GAME VARIABLES
-    dt = time.time() - lastTime 
-    dt *= 60
+    dt += time.time() - lastTime 
+    dt2 = time.time() - lastTime
     lastTime = time.time()
-    score += 0.1 * dt
-    timebarsize -= 0.25 * dt
+    score += 0.1 * dt2
+    timebarsize -= 0.25 * dt2
     if slow:
-        timebarsize -= 0.25 * dt
+        timebarsize -= 0.25 * dt2
     if timebarsize <= 0:
         lost = True
     timebar = pygame.Rect(20, 20, timebarsize, 20)
@@ -181,65 +183,32 @@ while True:
                 FPS = 144
     # GAME VARIABLES END
 
-    # PLAYER MOVEMENT
-    if moveLeft and player.left >= dt * MOVESPEED:
-        player.left -= dt * MOVESPEED
-    elif moveRight and player.right <= WINDOWWIDTH:
-        player.left += dt * MOVESPEED
-    # JUMP AND GRAVITY
-    if jumpForce <= 0:
-        falling = True
-    if player.bottom == floor.top:
-        falling = False
-        jumpForce = 0
-        stopJumping = False
-    if (
-            moveUp 
-        and not falling 
-        and player.top > WINDOWHEIGHT / 3 
-        and not stopJumping
-        ):
-        jumpForce = INITJUMPFORCE
-    if (
-            jumpStep != 30 or falling 
-        and player.bottom <= floor.top
-        ):
-        jumpForce -= GRAVITY * dt
-        player.top -= (jumpForce / 30) * dt
-        jumpStep += 1
-        if player.bottom >= floor.top:
-            player.bottom = floor.top
-    if jumpStep == 30 and not falling:
-        jumpStep = 1
-    # JUMP AND GRAVITY 
-    # END
-    # PLAYER MOVEMENT END
-
     # WALL GENERATION
-    if(
-            len(walls) < 3
-        and random.randint(0,30) == 0
-        and score >= 350
-        or  len(walls) < 6
-        and score <= 250
-        and random.randint(0,45) == 0
-        ):
-        if len(ghostwalls) > 0:
-            if ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150:
-                if len(walls) > 0:
-                    if walls[len(walls)-1].right < WINDOWWIDTH - 150 :
+    if random.randint(0,1) == 0:
+        if(
+                len(walls) < 3
+            and random.randint(0,30) == 0
+            and score >= 350
+            or  len(walls) < 6
+            and score <= 250
+            and random.randint(0,45) == 0
+            ):
+            if len(ghostwalls) > 0:
+                if ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150:
+                    if len(walls) > 0:
+                        if walls[len(walls)-1].right < WINDOWWIDTH - 150 :
+                            if random.randint(0,1) == 0 : walls.append(generateNewWall())
+                            else: walls.append(generateNewTopWall())
+                    else:
                         if random.randint(0,1) == 0 : walls.append(generateNewWall())
                         else: walls.append(generateNewTopWall())
-                else:
+            elif len(walls) > 0:
+                if walls[len(walls)-1].right < WINDOWWIDTH - 150:
                     if random.randint(0,1) == 0 : walls.append(generateNewWall())
                     else: walls.append(generateNewTopWall())
-        elif len(walls) > 0:
-            if walls[len(walls)-1].right < WINDOWWIDTH - 150:
-                if random.randint(0,1) == 0 : walls.append(generateNewWall())
-                else: walls.append(generateNewTopWall())
-        elif random.randint(0,1) == 0 : walls.append(generateNewWall())
-        else: walls.append(generateNewTopWall())
-    if(
+            elif random.randint(0,1) == 0 : walls.append(generateNewWall())
+            else: walls.append(generateNewTopWall())
+    elif(
             len(ghostwalls) < 3
         and random.randint(0,30) == 0
         and score >= 300
@@ -261,22 +230,6 @@ while True:
         else: ghostwalls.append(generateNewGhostTopWall())
     # WALL GENERATION END
 
-    # WALL MOVEMENT
-    if slow : dt /= 2
-    for wall in walls:
-        wall.right -= (MOVESPEED / 2) * round (dt, 4)
-        if(wall.right <= 1):
-            walls.remove(wall)
-        elif Rect.colliderect(wall, player) and not intang:
-            lost = True
-    for wall in ghostwalls:
-        wall.right -= (MOVESPEED / 2) * round(dt, 4)
-        if(wall.right <= 1):
-            ghostwalls.remove(wall)
-        elif Rect.colliderect(wall, player) and intang:
-            lost = True
-    # WALL MOVEMENT END
-
     # FRUIT GENERATION
     if len(fruits) < 2:
         fruits.append(generateNewFruit())
@@ -289,18 +242,70 @@ while True:
                 fruits.remove(fruits[i])
                 fruits.append(generateNewFruit())
     # FRUIT GENERATION END
+    
+    while dt > SMALLSTEP:
+        # PLAYER MOVEMENT
+        if moveLeft and player.left >= dt * MOVESPEED * 60:
+            player.left -= dt * MOVESPEED * 60
+        elif moveRight and player.right <= WINDOWWIDTH:
+            player.left += dt * MOVESPEED * 60
+        # JUMP AND GRAVITY
+        if jumpForce <= 0:
+            falling = True
+        if player.bottom == floor.top:
+            falling = False
+            jumpForce = 0
+            stopJumping = False
+        if (
+                moveUp 
+            and not falling 
+            and player.top > WINDOWHEIGHT / 3 
+            and not stopJumping
+            ):
+            jumpForce = INITJUMPFORCE
+        if (
+                jumpStep != 30 or falling 
+            and player.bottom <= floor.top
+            ):
+            jumpForce -= GRAVITY * dt * 60
+            player.top -= (jumpForce / 30) * dt * 60
+            jumpStep += 1
+            if player.bottom >= floor.top:
+                player.bottom = floor.top
+        if jumpStep == 30 and not falling:
+            jumpStep = 1
+        # JUMP AND GRAVITY 
+        # END
+        # PLAYER MOVEMENT END
 
-    # FRUIT MOVEMENT
-    for fruit in fruits:
-        fruit.right -= dt * MOVESPEED / 2
-        if fruit.right <= 1:
-            fruits.remove(fruit)
-        elif fruit.colliderect(player) and not intang:
-            fruits.remove(fruit)
-            score += 15.0
-            timebarsize += 25
-    if slow : dt *= 2
-    # FRUIT MOVEMENT END
+        # WALL MOVEMENT
+        if slow : dt /= 2
+        for wall in walls:
+            wall.right -= (MOVESPEED / 2) * dt * 60
+            if(wall.right <= 1):
+                walls.remove(wall)
+            elif Rect.colliderect(wall, player) and not intang:
+                lost = True
+        for wall in ghostwalls:
+            wall.right -= (MOVESPEED / 2) * dt * 60
+            if(wall.right <= 1):
+                ghostwalls.remove(wall)
+            elif Rect.colliderect(wall, player) and intang:
+                lost = True
+        # WALL MOVEMENT END
+
+        # FRUIT MOVEMENT
+        for fruit in fruits:
+            fruit.right -= dt * MOVESPEED / 2 * 60
+            if fruit.right <= 1:
+                fruits.remove(fruit)
+            elif fruit.colliderect(player) and not intang:
+                fruits.remove(fruit)
+                score += 15.0
+                timebarsize += 25
+        if slow : dt *= 2
+        # FRUIT MOVEMENT END
+        dt -= SMALLSTEP
 
     # UPDATE SCREEN
     windowSurface.fill(black)
