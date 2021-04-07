@@ -6,8 +6,8 @@ pygame.init()
 mainClock = pygame.time.Clock()
 
 # Set up the windows
-WINDOWWIDTH = 800
-WINDOWHEIGHT = 600
+WINDOWWIDTH = 1280
+WINDOWHEIGHT = 720
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32, 0, 1)
 pygame.display.set_caption('Dino')
 
@@ -221,7 +221,7 @@ while True:
     if slow : dt /= 2
     for wall in walls:
         wall.left -= dt * MOVESPEED / 2
-        if(wall.right <= 0):
+        if(wall.right <= 1):
             walls.remove(wall)
         elif Rect.colliderect(wall, player) and not intang:
             lost = True
@@ -243,7 +243,7 @@ while True:
     # FRUIT MOVEMENT
     for fruit in fruits:
         fruit.left -= dt * MOVESPEED / 2
-        if fruit.right <= 0:
+        if fruit.right <= 1:
             fruits.remove(fruit)
         elif fruit.colliderect(player) and not intang:
             fruits.remove(fruit)
