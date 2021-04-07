@@ -6,8 +6,8 @@ pygame.init()
 mainClock = pygame.time.Clock()
 
 # Set up the window
-WINDOWWIDTH = 640
-WINDOWHEIGHT = 480
+WINDOWWIDTH = 1280
+WINDOWHEIGHT = 720
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32, 0, 1)
 pygame.display.set_caption('Dino')
 
@@ -24,7 +24,7 @@ gray = (150,150,150)
 lost = False
 score = 300
 lastTime = time.time()
-lastUpdate = 1.0
+lastUpdate = 1
 FPS = 144
 
 # Set up time bar
