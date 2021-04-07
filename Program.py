@@ -210,7 +210,7 @@ while True:
     if len(walls) == 0:
         walls.append(generateNewWall())
     elif(
-            len(walls) < 3
+            len(walls) < 6
         and walls[len(walls)-1].right < WINDOWWIDTH - 150 
         and random.randint(0,60) == 0
         ):
@@ -220,7 +220,7 @@ while True:
     # WALL MOVEMENT
     if slow : dt /= 2
     for wall in walls:
-        wall.left -= dt * MOVESPEED / 2
+        wall.right -= (MOVESPEED / 2) * dt
         if(wall.right <= 1):
             walls.remove(wall)
         elif Rect.colliderect(wall, player) and not intang:
@@ -242,7 +242,7 @@ while True:
 
     # FRUIT MOVEMENT
     for fruit in fruits:
-        fruit.left -= dt * MOVESPEED / 2
+        fruit.right -= dt * MOVESPEED / 2
         if fruit.right <= 1:
             fruits.remove(fruit)
         elif fruit.colliderect(player) and not intang:
