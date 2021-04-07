@@ -298,7 +298,7 @@ while True:
         elif fruit.colliderect(player) and not intang:
             fruits.remove(fruit)
             score += 15.0
-            timebarsize += 20
+            timebarsize += 25
     if slow : dt *= 2
     # FRUIT MOVEMENT END
 
