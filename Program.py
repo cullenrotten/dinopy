@@ -8,7 +8,7 @@ mainClock = pygame.time.Clock()
 # Set up the window
 WINDOWWIDTH = 1280
 WINDOWHEIGHT = 720
-windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
+windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 0, 0, 1)
 pygame.display.set_caption('Dino')
 
 # Set up colors
@@ -264,13 +264,13 @@ while True:
     # WALL MOVEMENT
     if slow : dt /= 2
     for wall in walls:
-        wall.right -= (MOVESPEED / 2) * dt
+        wall.right -= (MOVESPEED / 2) * round (dt, 4)
         if(wall.right <= 1):
             walls.remove(wall)
         elif Rect.colliderect(wall, player) and not intang:
             lost = True
     for wall in ghostwalls:
-        wall.right -= (MOVESPEED / 2) * dt
+        wall.right -= (MOVESPEED / 2) * round(dt, 4)
         if(wall.right <= 1):
             ghostwalls.remove(wall)
         elif Rect.colliderect(wall, player) and intang:
