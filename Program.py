@@ -44,6 +44,10 @@ def generateNewWall():
     return pygame.Rect(WINDOWWIDTH,WINDOWHEIGHT-WINDOWHEIGHT / 3 - WALLHEIGHT + 50,50,WALLHEIGHT)
 def generateNewGhostWall():
     return pygame.Rect(WINDOWWIDTH,WINDOWHEIGHT-WINDOWHEIGHT / 3 - WALLHEIGHT + 50,50,WALLHEIGHT)
+def generateNewTopWall():
+    return pygame.Rect(WINDOWWIDTH,0,50,WALLHEIGHT*2)
+def generateNewGhostTopWall():
+    return pygame.Rect(WINDOWWIDTH,0,50,WALLHEIGHT*2)
 walls = []
 ghostwalls = []
 ghostwallSurface = pygame.Surface((50,WALLHEIGHT))
@@ -214,35 +218,45 @@ while True:
     if(
             len(walls) < 3
         and random.randint(0,30) == 0
+        or  len(walls) < 6
+        and score <= 300
+        and random.randint(0,45) == 0
         ):
         if len(ghostwalls) > 0:
             if ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150:
                 if len(walls) > 0:
                     if walls[len(walls)-1].right < WINDOWWIDTH - 150 :
-                        walls.append(generateNewWall())
+                        if random.randint(0,1) == 0 : walls.append(generateNewWall())
+                        else: walls.append(generateNewTopWall())
                 else:
-                    walls.append(generateNewWall())
+                    if random.randint(0,1) == 0 : walls.append(generateNewWall())
+                    else: walls.append(generateNewTopWall())
         elif len(walls) > 0:
             if walls[len(walls)-1].right < WINDOWWIDTH - 150:
-                walls.append(generateNewWall())
-        else:
-            walls.append(generateNewWall())
+                if random.randint(0,1) == 0 : walls.append(generateNewWall())
+                else: walls.append(generateNewTopWall())
+        elif random.randint(0,1) == 0 : walls.append(generateNewWall())
+        else: walls.append(generateNewTopWall())
     if(
             len(ghostwalls) < 3
         and random.randint(0,30) == 0
+        and score >= 300
         ):
         if len(ghostwalls) > 0:
             if ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150:
                 if len(walls) > 0:
                     if walls[len(walls)-1].right < WINDOWWIDTH - 150 :
-                        ghostwalls.append(generateNewGhostWall())
+                        if random.randint(0,1) == 0 : walls.append(generateNewGhostWall())
+                        else: walls.append(generateNewGhostTopWall())
                 else:
-                    ghostwalls.append(generateNewGhostWall())
+                    if random.randint(0,1) == 0 : walls.append(generateNewGhostWall())
+                    else: walls.append(generateNewGhostTopWall())
         elif len(walls) > 0:
             if walls[len(walls)-1].right < WINDOWWIDTH - 150:
-                ghostwalls.append(generateNewGhostWall())
-        else:
-            ghostwalls.append(generateNewGhostWall())
+                if random.randint(0,1) == 0 : walls.append(generateNewGhostWall())
+                else: walls.append(generateNewGhostTopWall())
+        elif random.randint(0,1) == 0 : walls.append(generateNewGhostWall())
+        else: walls.append(generateNewGhostTopWall())
     # WALL GENERATION END
 
     # WALL MOVEMENT
