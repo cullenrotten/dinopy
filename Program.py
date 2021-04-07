@@ -25,7 +25,7 @@ lost = False
 score = 0.0
 lastTime = time.time()
 lastUpdate = 1.0
-FPS = 60
+FPS = 144
 
 # Set up time bar
 timebarsize = 200
@@ -145,7 +145,7 @@ while True:
                 white = invertColor(white)
                 gray = invertColor(gray)
             if event.key == K_e:
-                FPS = 15
+                FPS = 30
 
                 
         if event.type == KEYUP:
@@ -170,7 +170,7 @@ while True:
                 white = invertColor(white)
                 gray = invertColor(gray)
             if event.key == K_e:
-                FPS = 60
+                FPS = 144
     # GAME VARIABLES END
 
     # PLAYER MOVEMENT
@@ -268,7 +268,7 @@ while True:
     else:
         windowSurface.blit(intangSurface, (player.x, player.y))
     pygame.display.update()
-    mainClock.tick(FPS)
+    mainClock.tick(144)
     # UPDATE SCREEN END
     
     # LOSE
