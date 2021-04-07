@@ -6,8 +6,8 @@ pygame.init()
 mainClock = pygame.time.Clock()
 
 # Set up the window
-WINDOWWIDTH = 1280
-WINDOWHEIGHT = 720
+WINDOWWIDTH = 640
+WINDOWHEIGHT = 480
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32, 0, 1)
 pygame.display.set_caption('Dino')
 
@@ -22,7 +22,7 @@ gray = (150,150,150)
 
 # Game variables
 lost = False
-score = 0.0
+score = 300
 lastTime = time.time()
 lastUpdate = 1.0
 FPS = 144
@@ -50,9 +50,10 @@ def generateNewGhostTopWall():
     return pygame.Rect(WINDOWWIDTH,0,50,WALLHEIGHT*2)
 walls = []
 ghostwalls = []
-ghostwallSurface = pygame.Surface((50,WALLHEIGHT))
+ghostwallSurface = pygame.Surface((50,WALLHEIGHT*2))
 ghostwallSurface.set_alpha(64)
 ghostwallSurface.fill(red)
+wallloops = 0
 
 # Set up fruits
 FRUITWIDTH = 25
@@ -141,6 +142,7 @@ while True:
                 jumpStep = 1 
                 score = 0
                 timebarsize = 200
+                wallloops = 0
             if event.key == K_SPACE:
                 intang = True
             if event.key == K_LSHIFT:
@@ -211,15 +213,17 @@ while True:
             player.bottom = floor.top
     if jumpStep == 30 and not falling:
         jumpStep = 1
-    # JUMP AND GRAVITY END
+    # JUMP AND GRAVITY 
+    # END
     # PLAYER MOVEMENT END
 
     # WALL GENERATION
     if(
             len(walls) < 3
         and random.randint(0,30) == 0
+        and score >= 350
         or  len(walls) < 6
-        and score <= 300
+        and score <= 250
         and random.randint(0,45) == 0
         ):
         if len(ghostwalls) > 0:
@@ -246,17 +250,17 @@ while True:
             if ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150:
                 if len(walls) > 0:
                     if walls[len(walls)-1].right < WINDOWWIDTH - 150 :
-                        if random.randint(0,1) == 0 : walls.append(generateNewGhostWall())
-                        else: walls.append(generateNewGhostTopWall())
+                        if random.randint(0,1) == 0 : walghostwallsls.append(generateNewGhostWall())
+                        else: ghostwalls.append(generateNewGhostTopWall())
                 else:
                     if random.randint(0,1) == 0 : walls.append(generateNewGhostWall())
-                    else: walls.append(generateNewGhostTopWall())
+                    else: ghostwalls.append(generateNewGhostTopWall())
         elif len(walls) > 0:
             if walls[len(walls)-1].right < WINDOWWIDTH - 150:
-                if random.randint(0,1) == 0 : walls.append(generateNewGhostWall())
-                else: walls.append(generateNewGhostTopWall())
-        elif random.randint(0,1) == 0 : walls.append(generateNewGhostWall())
-        else: walls.append(generateNewGhostTopWall())
+                if random.randint(0,1) == 0 : ghostwalls.append(generateNewGhostWall())
+                else: ghostwalls.append(generateNewGhostTopWall())
+        elif random.randint(0,1) == 0 : ghostwalls.append(generateNewGhostWall())
+        else: ghostwalls.append(generateNewGhostTopWall())
     # WALL GENERATION END
 
     # WALL MOVEMENT
@@ -295,8 +299,8 @@ while True:
             fruits.remove(fruit)
         elif fruit.colliderect(player) and not intang:
             fruits.remove(fruit)
-            score += 15
-            timebarsize += 50
+            score += 15.0
+            timebarsize += 5000
     if slow : dt *= 2
     # FRUIT MOVEMENT END
 
@@ -350,7 +354,7 @@ while True:
                         white = invertColor(white)
                         gray = invertColor(gray)
                     gameStart()
-                    score = 0
+                    score = 0.0
                     lost = False
                     jumpForce = 0
                     moveLeft = False
@@ -363,5 +367,6 @@ while True:
                     slow = False
                     jumpStep = 1       
                     timebarsize = 200
+                    wallloops = 0
                     break
     # END LOSE
