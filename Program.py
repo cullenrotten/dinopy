@@ -22,7 +22,7 @@ gray = (150,150,150)
 
 # Game variables
 lost = False
-score = 300
+score = 0
 lastTime = time.time()
 lastUpdate = 1
 FPS = 144
@@ -300,7 +300,7 @@ while True:
         elif fruit.colliderect(player) and not intang:
             fruits.remove(fruit)
             score += 15.0
-            timebarsize += 5000
+            timebarsize += 20
     if slow : dt *= 2
     # FRUIT MOVEMENT END
 
