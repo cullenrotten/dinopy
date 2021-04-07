@@ -8,7 +8,7 @@ mainClock = pygame.time.Clock()
 # Set up the window
 WINDOWWIDTH = 1280
 WINDOWHEIGHT = 720
-windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32, 0, 1)
+windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 pygame.display.set_caption('Dino')
 
 # Set up colors
@@ -24,7 +24,6 @@ gray = (150,150,150)
 lost = False
 score = 0
 lastTime = time.time()
-lastUpdate = 1
 FPS = 144
 
 # Set up time bar
@@ -99,7 +98,6 @@ while True:
     lastTime = time.time()
     score += 0.1 * dt
     timebarsize -= 0.25 * dt
-    lastUpdate = 0.0 * dt
     if slow:
         timebarsize -= 0.25 * dt
     if timebarsize <= 0:
@@ -250,7 +248,7 @@ while True:
             if ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150:
                 if len(walls) > 0:
                     if walls[len(walls)-1].right < WINDOWWIDTH - 150 :
-                        if random.randint(0,1) == 0 : walghostwallsls.append(generateNewGhostWall())
+                        if random.randint(0,1) == 0 : ghostwalls.append(generateNewGhostWall())
                         else: ghostwalls.append(generateNewGhostTopWall())
                 else:
                     if random.randint(0,1) == 0 : walls.append(generateNewGhostWall())
