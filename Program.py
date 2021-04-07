@@ -271,7 +271,7 @@ while True:
         # PLAYER MOVEMENT END
 
         # WALL MOVEMENT
-        if slow : dt /= 2
+        if slow : SMALLSTEP /= 2
         for wall in walls:
             wall.right -= (MOVESPEED / 2) * SMALLSTEP * 60
             if(wall.right <= 1):
@@ -295,7 +295,7 @@ while True:
                 fruits.remove(fruit)
                 score += 15.0
                 timebarsize += 30
-        if slow : dt *= 2
+        if slow : SMALLSTEP *= 2
         # FRUIT MOVEMENT END
         dt -= SMALLSTEP
         score += 0.07
