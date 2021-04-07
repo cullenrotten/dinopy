@@ -145,7 +145,7 @@ while True:
                 white = invertColor(white)
                 gray = invertColor(gray)
             if event.key == K_e:
-                FPS = 30
+                FPS = 20
 
                 
         if event.type == KEYUP:
