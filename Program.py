@@ -5,7 +5,7 @@ from pygame.locals import *
 pygame.init()
 mainClock = pygame.time.Clock()
 
-# Set up the windows
+# Set up the window
 WINDOWWIDTH = 1280
 WINDOWHEIGHT = 720
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32, 0, 1)
@@ -42,7 +42,13 @@ floor = pygame.Rect(0,WINDOWHEIGHT - WINDOWHEIGHT / 3 + 50,WINDOWWIDTH,WINDOWHEI
 WALLHEIGHT = 200
 def generateNewWall():
     return pygame.Rect(WINDOWWIDTH,WINDOWHEIGHT-WINDOWHEIGHT / 3 - WALLHEIGHT + 50,50,WALLHEIGHT)
+def generateNewGhostWall():
+    return pygame.Rect(WINDOWWIDTH,WINDOWHEIGHT-WINDOWHEIGHT / 3 - WALLHEIGHT + 50,50,WALLHEIGHT)
 walls = []
+ghostwalls = []
+ghostwallSurface = pygame.Surface((50,WALLHEIGHT))
+ghostwallSurface.set_alpha(128)
+ghostwallSurface.fill(red)
 
 # Set up fruits
 FRUITWIDTH = 25
@@ -86,13 +92,11 @@ while True:
     dt = time.time() - lastTime 
     dt *= 60
     lastTime = time.time()
-    score +=0.1 * dt
+    score += 0.1 * dt
     timebarsize -= 0.25 * dt
     lastUpdate = 0.0 * dt
     if slow:
         timebarsize -= 0.25 * dt
-    if intang:
-        timebarsize -= 0.5 * dt
     if timebarsize <= 0:
         lost = True
     timebar = pygame.Rect(20, 20, timebarsize, 20)
@@ -209,9 +213,21 @@ while True:
     # WALL GENERATION
     if len(walls) == 0:
         walls.append(generateNewWall())
-    elif(
-            len(walls) < 6
+    if len(ghostwalls) == 0:
+        ghostwalls.append(generateNewGhostWall())
+    if(
+            len(walls) < 3
+        and len(walls) > 0
         and walls[len(walls)-1].right < WINDOWWIDTH - 150 
+        and ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150
+        and random.randint(0,60) == 0
+        ):
+        walls.append(generateNewWall())
+    if(
+            len(ghostwalls) < 3
+        and len(ghostwalls) > 0
+        and walls[len(walls)-1].right < WINDOWWIDTH - 150 
+        and ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150
         and random.randint(0,60) == 0
         ):
         walls.append(generateNewWall())
@@ -224,6 +240,12 @@ while True:
         if(wall.right <= 1):
             walls.remove(wall)
         elif Rect.colliderect(wall, player) and not intang:
+            lost = True
+    for wall in ghostwalls:
+        wall.right -= (MOVESPEED / 2) * dt
+        if(wall.right <= 1):
+            walls.remove(wall)
+        elif Rect.colliderect(wall, player) and intang:
             lost = True
     # WALL MOVEMENT END
 
@@ -257,15 +279,18 @@ while True:
     if len(walls) != 0:
         for wall in walls:
             pygame.draw.rect(windowSurface,red,wall)
+    if len(ghostwalls) != 0:
+        for wall in ghostwalls:
+            windowSurface.blit(ghostwallSurface, (wall.x, wall.y))
     if len(fruits) != 0:
         for fruit in fruits:
             pygame.draw.rect(windowSurface,orange,fruit)
     if timebarsize > 0:
         pygame.draw.rect(windowSurface,blue,timebar)
     pygame.draw.rect(windowSurface,green,floor)
-    if not intang:
+    if not intang: 
         pygame.draw.rect(windowSurface,white,player)
-    else:
+    else:            
         windowSurface.blit(intangSurface, (player.x, player.y))
     pygame.display.update()
     mainClock.tick(FPS)
