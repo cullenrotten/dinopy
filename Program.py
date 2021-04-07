@@ -299,9 +299,9 @@ while True:
         # FRUIT MOVEMENT END
         dt -= SMALLSTEP
         score += 0.07
-        timebarsize -= 0.20
+        timebarsize -= 0.12
         if slow:
-            timebarsize -= 0.20
+            timebarsize -= 0.12
         if timebarsize <= 0:
             lost = True
         timebar = pygame.Rect(20, 20, timebarsize, 20)
