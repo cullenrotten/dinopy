@@ -16,7 +16,6 @@ BLACK = (0,0,0)
 WHITE = (255,255,255)
 RED = (100,0,0)
 GREEN = (0,100,0)
-BLUE = (0,0,255)
 
 # Game variables
 lost = False
@@ -116,9 +115,17 @@ while True:
         jumpForce = 0
         stopJumping = False
         player.bottom = floor.top
-    if moveUp and not falling and player.top > WINDOWHEIGHT / 3 and not stopJumping:
+    if (
+            moveUp 
+        and not falling 
+        and player.top > WINDOWHEIGHT / 3 
+        and not stopJumping
+        ):
         jumpForce = INITJUMPFORCE
-    if jumpStep != 60 or falling and player.bottom < floor.top:
+    if (
+            jumpStep != 60 or falling 
+        and player.bottom < floor.top
+        ):
         jumpForce -= GRAVITY
         player.top -= jumpForce / 30
         jumpStep += 1
@@ -128,14 +135,17 @@ while True:
 
     # PLAYER MOVEMENT END
 
-    # WALL MOVEMENT
+    # WALL GENERATION
     if len(walls) == 0:
         walls.append(generateNewWall())
-    elif len(walls) < 3:
-        if walls[len(walls)-1].right < WINDOWWIDTH - 150 and random.randint(0,60) == 0:
-            walls.append(generateNewWall())
-    else:
-        pass
+    elif(
+            len(walls) < 3
+        and walls[len(walls)-1].right < WINDOWWIDTH - 150 
+        and random.randint(0,60) == 0
+        ):
+        walls.append(generateNewWall())
+    # WALL GENERATION END
+    # WALL MOVEMENT
     for wall in walls:
         wall.left -= MOVESPEED / 2
         if(wall.right <= 0):
@@ -156,6 +166,7 @@ while True:
     pygame.display.update()
     mainClock.tick(60)
     # UPDATE SCREEN END
+    
     # LOSE
     basicFont = pygame.font.SysFont(None, 24)
     text = basicFont.render('Final score : %s' % (round(score)), True, BLACK, WHITE)
