@@ -6,8 +6,8 @@ pygame.init()
 mainClock = pygame.time.Clock()
 
 # Set up the window
-WINDOWWIDTH = 1280
-WINDOWHEIGHT = 720
+WINDOWWIDTH = 640
+WINDOWHEIGHT = 480
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 0, 0, 1)
 pygame.display.set_caption('Dino')
 
@@ -26,11 +26,11 @@ score = 0
 lastTime = time.time()
 FPS = 144
 dt = 0
-SMALLSTEP = 0.010
+SMALLSTEP = 1 / 144
 
 # Set up time bar
 timebarsize = 200
-
+timebar = 1
 # Set up movement variables
 MOVESPEED = 5
 INITJUMPFORCE = 200
@@ -94,18 +94,10 @@ gameStart()
 
 # Main game loop
 while True:
-    # GAME VARIABLES
+    # TIME VARIABLES
     dt += time.time() - lastTime 
-    dt2 = time.time() - lastTime
     lastTime = time.time()
-    score += 0.1 * dt2
-    timebarsize -= 0.25 * dt2
-    if slow:
-        timebarsize -= 0.25 * dt2
-    if timebarsize <= 0:
-        lost = True
-    timebar = pygame.Rect(20, 20, timebarsize, 20)
-    # GAME VARIABLES END
+    # TIME VARIABLES END
     
     # EVENTS
     for event in pygame.event.get():
@@ -142,7 +134,7 @@ while True:
                 jumpStep = 1 
                 score = 0
                 timebarsize = 200
-                wallloops = 0
+                timebar = 1
             if event.key == K_SPACE:
                 intang = True
             if event.key == K_LSHIFT:
@@ -194,16 +186,16 @@ while True:
             and random.randint(0,45) == 0
             ):
             if len(ghostwalls) > 0:
-                if ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150:
+                if ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 100:
                     if len(walls) > 0:
-                        if walls[len(walls)-1].right < WINDOWWIDTH - 150 :
+                        if walls[len(walls)-1].right < WINDOWWIDTH - 100 :
                             if random.randint(0,1) == 0 : walls.append(generateNewWall())
                             else: walls.append(generateNewTopWall())
                     else:
                         if random.randint(0,1) == 0 : walls.append(generateNewWall())
                         else: walls.append(generateNewTopWall())
             elif len(walls) > 0:
-                if walls[len(walls)-1].right < WINDOWWIDTH - 150:
+                if walls[len(walls)-1].right < WINDOWWIDTH - 100:
                     if random.randint(0,1) == 0 : walls.append(generateNewWall())
                     else: walls.append(generateNewTopWall())
             elif random.randint(0,1) == 0 : walls.append(generateNewWall())
@@ -214,16 +206,16 @@ while True:
         and score >= 300
         ):
         if len(ghostwalls) > 0:
-            if ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150:
+            if ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 100:
                 if len(walls) > 0:
-                    if walls[len(walls)-1].right < WINDOWWIDTH - 150 :
+                    if walls[len(walls)-1].right < WINDOWWIDTH - 100 :
                         if random.randint(0,1) == 0 : ghostwalls.append(generateNewGhostWall())
                         else: ghostwalls.append(generateNewGhostTopWall())
                 else:
                     if random.randint(0,1) == 0 : walls.append(generateNewGhostWall())
                     else: ghostwalls.append(generateNewGhostTopWall())
         elif len(walls) > 0:
-            if walls[len(walls)-1].right < WINDOWWIDTH - 150:
+            if walls[len(walls)-1].right < WINDOWWIDTH - 100:
                 if random.randint(0,1) == 0 : ghostwalls.append(generateNewGhostWall())
                 else: ghostwalls.append(generateNewGhostTopWall())
         elif random.randint(0,1) == 0 : ghostwalls.append(generateNewGhostWall())
@@ -245,10 +237,10 @@ while True:
     
     while dt > SMALLSTEP:
         # PLAYER MOVEMENT
-        if moveLeft and player.left >= dt * MOVESPEED * 60:
-            player.left -= dt * MOVESPEED * 60
+        if moveLeft and player.left >= SMALLSTEP * MOVESPEED * 60:
+            player.left -= SMALLSTEP * MOVESPEED * 60
         elif moveRight and player.right <= WINDOWWIDTH:
-            player.left += dt * MOVESPEED * 60
+            player.left += SMALLSTEP * MOVESPEED * 60
         # JUMP AND GRAVITY
         if jumpForce <= 0:
             falling = True
@@ -267,8 +259,8 @@ while True:
                 jumpStep != 30 or falling 
             and player.bottom <= floor.top
             ):
-            jumpForce -= GRAVITY * dt * 60
-            player.top -= (jumpForce / 30) * dt * 60
+            jumpForce -= GRAVITY * SMALLSTEP * 60
+            player.top -= (jumpForce / 30) * SMALLSTEP * 60
             jumpStep += 1
             if player.bottom >= floor.top:
                 player.bottom = floor.top
@@ -281,13 +273,13 @@ while True:
         # WALL MOVEMENT
         if slow : dt /= 2
         for wall in walls:
-            wall.right -= (MOVESPEED / 2) * dt * 60
+            wall.right -= (MOVESPEED / 2) * SMALLSTEP * 60
             if(wall.right <= 1):
                 walls.remove(wall)
             elif Rect.colliderect(wall, player) and not intang:
                 lost = True
         for wall in ghostwalls:
-            wall.right -= (MOVESPEED / 2) * dt * 60
+            wall.right -= (MOVESPEED / 2) * SMALLSTEP * 60
             if(wall.right <= 1):
                 ghostwalls.remove(wall)
             elif Rect.colliderect(wall, player) and intang:
@@ -296,16 +288,23 @@ while True:
 
         # FRUIT MOVEMENT
         for fruit in fruits:
-            fruit.right -= dt * MOVESPEED / 2 * 60
+            fruit.right -= SMALLSTEP * MOVESPEED / 2 * 60
             if fruit.right <= 1:
                 fruits.remove(fruit)
             elif fruit.colliderect(player) and not intang:
                 fruits.remove(fruit)
                 score += 15.0
-                timebarsize += 25
+                timebarsize += 30
         if slow : dt *= 2
         # FRUIT MOVEMENT END
         dt -= SMALLSTEP
+        score += 0.07
+        timebarsize -= 0.20
+        if slow:
+            timebarsize -= 0.20
+        if timebarsize <= 0:
+            lost = True
+        timebar = pygame.Rect(20, 20, timebarsize, 20)
 
     # UPDATE SCREEN
     windowSurface.fill(black)
@@ -318,7 +317,7 @@ while True:
     if len(fruits) != 0:
         for fruit in fruits:
             pygame.draw.rect(windowSurface,orange,fruit)
-    if timebarsize > 0:
+    if timebarsize > 0 and timebar != 1:
         pygame.draw.rect(windowSurface,blue,timebar)
     pygame.draw.rect(windowSurface,green,floor)
     if not intang: 
@@ -370,6 +369,7 @@ while True:
                     slow = False
                     jumpStep = 1       
                     timebarsize = 200
+                    timebar = 1
                     wallloops = 0
                     break
     # END LOSE
