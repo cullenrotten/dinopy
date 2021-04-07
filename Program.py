@@ -145,7 +145,7 @@ while True:
                 white = invertColor(white)
                 gray = invertColor(gray)
             if event.key == K_e:
-                FPS = 20
+                FPS = 30
 
                 
         if event.type == KEYUP:
@@ -268,7 +268,7 @@ while True:
     else:
         windowSurface.blit(intangSurface, (player.x, player.y))
     pygame.display.update()
-    mainClock.tick(144)
+    mainClock.tick(FPS)
     # UPDATE SCREEN END
     
     # LOSE
