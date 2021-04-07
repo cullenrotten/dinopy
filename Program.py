@@ -70,6 +70,7 @@ moveLeft = False
 moveRight = False
 moveUp = False
 moveDown = False
+moveStep = 5
 falling = False
 stopJumping = False
 intang = False
@@ -153,8 +154,10 @@ while True:
         if event.type == KEYUP:
             if event.key == K_LEFT:
                 moveLeft = False
+                moveStep = 5
             if event.key == K_RIGHT:
                 moveRight = False
+                moveStep = 5
             if event.key == K_UP:
                 moveUp = False
                 stopJumping = True
@@ -238,9 +241,11 @@ while True:
     while dt > SMALLSTEP:
         # PLAYER MOVEMENT
         if moveLeft and player.left >= SMALLSTEP * MOVESPEED * 60:
-            player.left -= SMALLSTEP * MOVESPEED * 60
+            player.left -= SMALLSTEP * MOVESPEED * 60 / moveStep
+            if moveStep != 1 : moveStep -= 1
         elif moveRight and player.right <= WINDOWWIDTH:
-            player.left += SMALLSTEP * MOVESPEED * 60
+            player.left += SMALLSTEP * MOVESPEED * 60 / moveStep
+            if moveStep != 1 : moveStep -= 1
         # JUMP AND GRAVITY
         if jumpForce <= 0:
             falling = True
