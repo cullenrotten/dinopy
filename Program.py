@@ -82,23 +82,20 @@ gameStart()
 
 # Main game loop
 while True:
-    if lastUpdate >= 0.14:
-        score +=0.1
-        timebarsize -=0.25
-        lastUpdate = 0.0
-        if slow:
-            timebarsize -=0.25
-        if intang:
-            timebarsize -=0.5
-    else:
-        lastUpdate += dt
     # GAME VARIABLES
     dt = time.time() - lastTime 
-    lastTime = time.time()
     dt *= 60
-    timebar = pygame.Rect(20, 20, timebarsize, 20)
+    lastTime = time.time()
+    score +=0.1 * dt
+    timebarsize -= 0.25 * dt
+    lastUpdate = 0.0 * dt
+    if slow:
+        timebarsize -= 0.25 * dt
+    if intang:
+        timebarsize -=0.5 * dt
     if timebarsize <= 0:
         lost = True
+    timebar = pygame.Rect(20, 20, timebarsize, 20)
     # GAME VARIABLES END
     
     # EVENTS
@@ -148,7 +145,7 @@ while True:
                 white = invertColor(white)
                 gray = invertColor(gray)
             if event.key == K_e:
-                FPS = 30
+                FPS = 15
 
                 
         if event.type == KEYUP:
@@ -177,18 +174,17 @@ while True:
     # GAME VARIABLES END
 
     # PLAYER MOVEMENT
-    if moveLeft and player.left != 0:
+    if moveLeft and player.left >= dt * MOVESPEED:
         player.left -= dt * MOVESPEED
-    elif moveRight and player.right != WINDOWWIDTH:
+    elif moveRight and player.right <= WINDOWWIDTH:
         player.left += dt * MOVESPEED
     # JUMP AND GRAVITY
     if jumpForce <= 0:
         falling = True
-    if player.bottom >= floor.top:
+    if player.bottom == floor.top:
         falling = False
         jumpForce = 0
         stopJumping = False
-        player.bottom = floor.top
     if (
             moveUp 
         and not falling 
@@ -198,11 +194,13 @@ while True:
         jumpForce = INITJUMPFORCE
     if (
             jumpStep != 30 or falling 
-        and player.bottom < floor.top
+        and player.bottom <= floor.top
         ):
         jumpForce -= GRAVITY * dt
         player.top -= (jumpForce / 30) * dt
         jumpStep += 1
+        if player.bottom >= floor.top:
+            player.bottom = floor.top
     if jumpStep == 30 and not falling:
         jumpStep = 1
     # JUMP AND GRAVITY END
