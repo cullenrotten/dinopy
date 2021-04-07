@@ -47,7 +47,7 @@ def generateNewGhostWall():
 walls = []
 ghostwalls = []
 ghostwallSurface = pygame.Surface((50,WALLHEIGHT))
-ghostwallSurface.set_alpha(128)
+ghostwallSurface.set_alpha(64)
 ghostwallSurface.fill(red)
 
 # Set up fruits
@@ -69,7 +69,6 @@ stopJumping = False
 intang = False
 slow = False
 jumpStep = 1
-walls.clear()
 player = pygame.Rect(0,floor.top - PLAYERSIZE,PLAYERSIZE,PLAYERSIZE)
 intangSurface = pygame.Surface((PLAYERSIZE,PLAYERSIZE))
 intangSurface.set_alpha(128)
@@ -77,6 +76,7 @@ intangSurface.fill(gray)
 # Game start
 def gameStart():
     walls.clear()
+    ghostwalls.clear()
     fruits.clear()
     player.bottom = floor.top
     player.left = 30
@@ -211,26 +211,38 @@ while True:
     # PLAYER MOVEMENT END
 
     # WALL GENERATION
-    if len(walls) == 0:
-        walls.append(generateNewWall())
-    if len(ghostwalls) == 0:
-        ghostwalls.append(generateNewGhostWall())
     if(
             len(walls) < 3
-        and len(walls) > 0
-        and walls[len(walls)-1].right < WINDOWWIDTH - 150 
-        and ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150
-        and random.randint(0,60) == 0
+        and random.randint(0,30) == 0
         ):
-        walls.append(generateNewWall())
+        if len(ghostwalls) > 0:
+            if ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150:
+                if len(walls) > 0:
+                    if walls[len(walls)-1].right < WINDOWWIDTH - 150 :
+                        walls.append(generateNewWall())
+                else:
+                    walls.append(generateNewWall())
+        elif len(walls) > 0:
+            if walls[len(walls)-1].right < WINDOWWIDTH - 150:
+                walls.append(generateNewWall())
+        else:
+            walls.append(generateNewWall())
     if(
             len(ghostwalls) < 3
-        and len(ghostwalls) > 0
-        and walls[len(walls)-1].right < WINDOWWIDTH - 150 
-        and ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150
-        and random.randint(0,60) == 0
+        and random.randint(0,30) == 0
         ):
-        walls.append(generateNewWall())
+        if len(ghostwalls) > 0:
+            if ghostwalls[len(ghostwalls)-1].right < WINDOWWIDTH - 150:
+                if len(walls) > 0:
+                    if walls[len(walls)-1].right < WINDOWWIDTH - 150 :
+                        ghostwalls.append(generateNewGhostWall())
+                else:
+                    ghostwalls.append(generateNewGhostWall())
+        elif len(walls) > 0:
+            if walls[len(walls)-1].right < WINDOWWIDTH - 150:
+                ghostwalls.append(generateNewGhostWall())
+        else:
+            ghostwalls.append(generateNewGhostWall())
     # WALL GENERATION END
 
     # WALL MOVEMENT
@@ -244,7 +256,7 @@ while True:
     for wall in ghostwalls:
         wall.right -= (MOVESPEED / 2) * dt
         if(wall.right <= 1):
-            walls.remove(wall)
+            ghostwalls.remove(wall)
         elif Rect.colliderect(wall, player) and intang:
             lost = True
     # WALL MOVEMENT END
