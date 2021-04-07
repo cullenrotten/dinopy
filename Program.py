@@ -105,16 +105,16 @@ while True:
             pygame.quit()
             sys.exit()
         if event.type == KEYDOWN:
-            if event.key == K_LEFT or event.key == K_a:
+            if event.key == K_LEFT:
                 moveLeft = True
                 moveRight = False
-            if event.key == K_RIGHT or event.key == K_d:
+            if event.key == K_RIGHT:
                 moveLeft = False
                 moveRight = True
-            if event.key == K_UP or event.key == K_w:
+            if event.key == K_UP:
                 moveUp = True
                 moveDown = False
-            if event.key == K_DOWN or event.key == K_s:
+            if event.key == K_DOWN:
                 moveUp = False
                 moveDown = True
             if event.key == K_ESCAPE:
@@ -135,9 +135,9 @@ while True:
                 score = 0
                 timebarsize = 200
                 timebar = 1
-            if event.key == K_SPACE:
+            if event.key == K_a:
                 intang = True
-            if event.key == K_LSHIFT:
+            if event.key == K_s:
                 slow = True
                 red = invertColor(red)
                 green = invertColor(green)
@@ -151,18 +151,18 @@ while True:
 
                 
         if event.type == KEYUP:
-            if event.key == K_LEFT or event.key == K_a:
+            if event.key == K_LEFT:
                 moveLeft = False
-            if event.key == K_RIGHT or event.key == K_d:
+            if event.key == K_RIGHT:
                 moveRight = False
-            if event.key == K_UP or event.key == K_w:
+            if event.key == K_UP:
                 moveUp = False
                 stopJumping = True
-            if event.key == K_DOWN or event.key == K_s:
+            if event.key == K_DOWN:
                 moveDown = False
-            if event.key == K_SPACE:
+            if event.key == K_a:
                 intang = False
-            if event.key == K_LSHIFT:
+            if event.key == K_s:
                 slow = False
                 red = invertColor(red)
                 green = invertColor(green)
